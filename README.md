@@ -1,2 +1,2 @@
-# imageDecolorizer
-Java GUI application to create unique gamut of image using k-means clustering
+# Image Decolorizer
+Java GUI application to create image with reduced gamut using k-means clustering.
