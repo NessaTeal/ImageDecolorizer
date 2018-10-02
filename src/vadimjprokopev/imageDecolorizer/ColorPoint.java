@@ -12,6 +12,12 @@ public class ColorPoint {
         red = mask & (RGB >>> 16);
     }
 
+    public ColorPoint(int red, int green, int blue) {
+        this.red = red;
+        this.green = green;
+        this.blue = blue;
+    }
+
     public double vectorDistance(ColorPoint another) {
         return Math.sqrt(Math.pow(this.red - another.red, 2)
         		+ Math.pow(this.green - another.green, 2)

@@ -42,10 +42,11 @@ public class ImageProcessor {
         }
 
         for (int iterationIndex = 0; iterationIndex < ITERATION_LIMIT; iterationIndex++) {
-            int amount[] = new int[depth];
-            int redSum[] = new int[depth];
-            int greenSum[] = new int[depth];
-            int blueSum[] = new int[depth];
+            List<List<ColorPoint>> closestPixels = new ArrayList<>(depth);
+            
+            for (int i = 0; i < depth; i++) {
+            	closestPixels.add(new ArrayList<>());
+            }
             
             for (int x = 0; x < width; x++) {
                 for (int y = 0; y < height; y++) {
@@ -60,19 +61,30 @@ public class ImageProcessor {
                     }
                     
                     indices[x][y] = index;
-                    amount[index]++;
-                    redSum[index] += imagePixels[x][y].red;
-                    greenSum[index] += imagePixels[x][y].green;
-                    blueSum[index] += imagePixels[x][y].blue;
+                    closestPixels.get(index).add(imagePixels[x][y]);
                 }
             }
-            for (int j = 0; j < depth; j++) {
-                if (amount[j] == 0) {
+            for (int i = 0; i < depth; i++) {
+            	List<ColorPoint> pixels = closestPixels.get(i);
+                if (pixels.isEmpty()) {
                     continue;
                 }
-                kernels.get(j).red = redSum[j] / amount[j];
-                kernels.get(j).green = greenSum[j] / amount[j];
-                kernels.get(j).blue = blueSum[j] / amount[j];
+                
+                int newRed = 0;
+                int newGreen = 0;
+                int newBlue = 0;
+                
+                for (ColorPoint pixel : pixels) {
+                	newRed += pixel.red;
+                	newGreen += pixel.green;
+                	newBlue += pixel.blue;
+                }
+                
+                newRed /= pixels.size();
+                newGreen /= pixels.size();
+                newBlue /= pixels.size();
+                
+                kernels.set(i, new ColorPoint(newRed, newGreen, newBlue));
             }
         }
 
