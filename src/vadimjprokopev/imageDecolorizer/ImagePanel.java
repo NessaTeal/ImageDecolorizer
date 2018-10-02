@@ -3,6 +3,7 @@ package vadimjprokopev.imageDecolorizer;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.swing.JPanel;
 
@@ -24,16 +25,14 @@ public class ImagePanel extends JPanel {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+        
+        List<Color> colors = dictionary.parallelStream()
+		        		.map(colorPoint -> new Color(colorPoint.red, colorPoint.green, colorPoint.blue))
+		        		.collect(Collectors.toList());
 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-            	int index = indices[x][y];
-            	ColorPoint pixelColor = dictionary.get(index);
-            	int red = pixelColor.red;
-            	int green = pixelColor.green;
-            	int blue = pixelColor.blue;
-            	Color color = new Color(red, green, blue);
-                g.setColor(color);
+                g.setColor(colors.get(indices[x][y]));
                 g.drawLine(x, y, x, y);
             }
         }
