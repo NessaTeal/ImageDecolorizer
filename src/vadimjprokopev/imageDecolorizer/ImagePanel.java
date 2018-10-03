@@ -13,10 +13,13 @@ public class ImagePanel extends JPanel {
     private int height;
     private int indices[][];
     private List<ColorPoint> dictionary;
-
-    public ImagePanel(int width, int height, int indexes[][], List<ColorPoint> dictionary) {
-        this.width = width;
+    
+    public void setDimensions(int width, int height) {
+    	this.width = width;
         this.height = height;
+    }
+    
+    public void setData(int indexes[][], List<ColorPoint> dictionary) {
         this.indices = indexes;
         this.dictionary = dictionary;
         repaint();
@@ -25,6 +28,10 @@ public class ImagePanel extends JPanel {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+        
+        if (dictionary == null) {
+        	return;
+        }
         
         List<Color> colors = dictionary.parallelStream()
 		        		.map(colorPoint -> new Color(colorPoint.red, colorPoint.green, colorPoint.blue))

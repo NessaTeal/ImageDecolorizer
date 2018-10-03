@@ -6,23 +6,27 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JFrame;
-
-public class ImageProcessor {
+public class ProcessImageRunnable implements Runnable {
 	
 	private static final int ITERATION_LIMIT = 10;
 	
 	private BufferedImage image;
 	private int depth;
+	private ImagePanel imagePanel;
 	
-	public ImageProcessor(BufferedImage image, int depth) {
+	public ProcessImageRunnable(BufferedImage image, int depth, ImagePanel imagePanel) {
 		this.image = image;
 		this.depth = depth;
+		this.imagePanel = imagePanel;
 	}
 	
-    public void process() {
+	@Override
+    public void run() {
         int width = image.getWidth();;
         int height = image.getHeight();
+
+        imagePanel.setDimensions(width, height);
+        
         int indices[][] = new int[width][height];
         List<ColorPoint> kernels = new ArrayList<>(depth);
 
@@ -86,16 +90,11 @@ public class ImageProcessor {
                 
                 kernels.set(i, new ColorPoint(newRed, newGreen, newBlue));
             }
+            
+            imagePanel.setData(indices, kernels);
         }
 
         saveFile(width, height, indices, kernels, depth);
-
-        JFrame newWindow = new JFrame();
-        newWindow.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        newWindow.add(new ImagePanel(width, height, indices, kernels));
-        newWindow.setSize(width, height);
-        newWindow.setVisible(true);
-
     }
 
     private void saveFile(int width, int height, int indexes[][], List<ColorPoint> dictionary, int depth) {

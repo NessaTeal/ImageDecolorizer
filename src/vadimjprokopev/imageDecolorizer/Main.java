@@ -2,6 +2,7 @@ package vadimjprokopev.imageDecolorizer;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
@@ -32,9 +33,16 @@ public class Main {
             try {
                 File file = new File(imagePathField.getText());
                 BufferedImage image = ImageIO.read(file);
-                ImageProcessor imageProcessor = new ImageProcessor(image, 16);
-                imageProcessor.process();
-            } catch (Exception e) {
+                
+                JFrame imageWindow = new JFrame();
+                imageWindow.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+                ImagePanel imagePanel = new ImagePanel();
+                imageWindow.add(imagePanel);
+                imageWindow.setSize(image.getWidth(), image.getHeight());
+                imageWindow.setVisible(true);
+                
+                new Thread(new ProcessImageRunnable(image, 16, imagePanel)).start();
+            } catch (IOException e) {
                 throw new IllegalArgumentException(e);
             }
         });
@@ -53,5 +61,4 @@ public class Main {
 
         frame.setVisible(true);
     }
-
 }
