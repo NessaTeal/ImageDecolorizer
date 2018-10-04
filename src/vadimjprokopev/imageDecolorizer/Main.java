@@ -8,8 +8,11 @@ import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
 
 public class Main {
     public static void main(String[] args) {
@@ -20,6 +23,8 @@ public class Main {
         JTextField imagePathField = new JTextField("Path to image");
         JButton processButton = new JButton("Process image");
         JButton selectButton = new JButton("Select image");
+        JLabel depthLabel = new JLabel("Depth (amount of kernels): ");
+        JSpinner depthSpinner = new JSpinner(new SpinnerNumberModel(16, 2, 255, 1));
 
         selectButton.addActionListener(actionEvent -> {
 	        JFileChooser fileChooser = new JFileChooser();
@@ -41,7 +46,7 @@ public class Main {
                 imageWindow.setSize(image.getWidth(), image.getHeight());
                 imageWindow.setVisible(true);
                 
-                new Thread(new ProcessImageRunnable(image, 16, imagePanel)).start();
+                new Thread(new ProcessImageRunnable(image, (Integer) depthSpinner.getValue(), imagePanel)).start();
             } catch (IOException e) {
                 throw new IllegalArgumentException(e);
             }
@@ -50,15 +55,19 @@ public class Main {
         panel.add(imagePathField);
         panel.add(selectButton);
         panel.add(processButton);
+        panel.add(depthLabel);
+        panel.add(depthSpinner);
 
         frame.setContentPane(panel);
         frame.setLayout(null);
-        frame.setSize(620, 100);
+        frame.setSize(600, 100);
 
         imagePathField.setBounds(0, 0, 450, 25);
         selectButton.setBounds(450, 0, 150, 25);
         processButton.setBounds(450, 25, 150, 25);
-
+        depthLabel.setBounds(5, 25, 175, 25);
+        depthSpinner.setBounds(180, 25, 100, 25);
+        
         frame.setVisible(true);
     }
 }

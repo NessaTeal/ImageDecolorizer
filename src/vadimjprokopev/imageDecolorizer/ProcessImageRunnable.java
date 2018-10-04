@@ -106,17 +106,17 @@ public class ProcessImageRunnable implements Runnable {
 
             out.writeShort(width);
             out.writeShort(height);
-            out.write(depth);
+            out.writeShort(depth);
             for (int i = 0; i < depth; i++) {
                 out.write(dictionary.get(i).red);
                 out.write(dictionary.get(i).green);
                 out.write(dictionary.get(i).blue);
             }
             byte buffer = 0;
-            int length = (int) Math.round((Math.log(depth) / Math.log(2)));
+            int length = (int) Math.ceil((Math.log(depth + 1) / Math.log(2)));
             int offset = 8 - length;
-            for (int x = 0; x < width; x++) {
-                for (int y = 0; y < height; y++) {
+            for (int y = 0; y < height; y++) {
+            	for (int x = 0; x < width; x++) {
                     if (offset == 0) {
                         buffer += (byte) (indexes[x][y]);
                         out.write(buffer);
